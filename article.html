@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LA LIGA</title>
+    <meta name="description" content="LA LIGA" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />  
+    <link rel="stylesheet" href="css/style.css">  
+    <link rel="stylesheet" href="css/materialize.min.css"/>
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#00897B" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://api.football-data.org/v2/">
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+
+     <!-- Favicon Website website dan IOS -->
+    <link rel="shortcut icon" href="soccer.png">
+    <link rel="apple-touch-icon" href="soccer.png">
+
+    <script>
+      $('#PreLoaderBar').addClass('indeterminate');
+        $(window).on("load", function(){
+          setTimeout(function(){
+            $('#PreLoaderBar').remove();
+          },1000)        
+        })
+    </script>
+  </head>
+  <body>
+    <!-- Navigasi -->
+    <nav class="teal lighten-1" role="navigation">
+      <div class="nav-wrapper container" width="100%">
+        <a href="#" class="brand-logo" id="logo-container">LA LIGA</a>
+        <a href="./index.html" class="sidenav-trigger" data-target="nav-mobile">
+          <i class="material-icons">arrow_back</i>
+        </a>
+        <ul class="topnav right hide-on-med-and-down"></ul>
+        <ul class="sidenav" id="nav-mobile"></ul>
+      </div>
+    </nav>
+    <!-- Akhir Navigasi -->
+    
+    <div class="container hide-on-med-and-down">
+      <nav>
+        <div class="nav-wrapper" style="margin-left:20px;">
+          <div class="col s12">
+            <a href="index.html" class="breadcrumb">Home</a>
+            <a href="#" class="breadcrumb">Team Detail</a>       
+          </div>
+        </div>
+      </nav>
+    </div>    
+
+    <div class="container">
+      <div class="progress" id="PreLoaderBar">
+        <div class="indeterminate"></div>
+      </div> 
+    </div>  
+
+    <main>
+    <div class="container" id="body-content"></div> 
+    <div class="fixed-action-btn" style="margin-bottom: 100px;">    
+        <a onclick="M.toast({html: 'Data Tim Favorit Berhasil Disimpan'})" class="btn" id="save" style="margin-bottom: 60px;">Save
+          <i class="large material-icons">save</i>
+        </a>   
+    </div>    
+    <div class="fixed-action-btn" style="margin-bottom: 100px;">
+      <p id="hapus" style="text-align: center; margin-bottom: -2px; font-weight: bold;">Delete</p>
+      <a class="btn-floating btn-large red" id="delete">      
+      <i class="large material-icons">delete</i>
+      </a>
+    </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="page-footer blue-grey darken-4">   
+      <div class="footer-copyright center-align">
+        <div class="container">
+          <p>© 2020 La Liga - Copyright : Nursyafriady </p>          
+        </div>
+      </div>
+    </footer>
+    <!-- Akhir Footer --> 
+  
+    <script src="js/materialize.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/idb.js"></script>
+    <script src="js/db.js"></script>
+    <script>
+      // REGISTER SERVICE WORKER
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then(() => {
+              console.log("Pendaftaran ServiceWorker berhasil");
+            })
+            .catch(() => {
+              console.log("Pendaftaran ServiceWorker gagal");
+            });
+        });
+      } else {
+        console.log("ServiceWorker belum didukung browser ini.");
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        let urlParams = new URLSearchParams(window.location.search);
+        let isFromSaved = urlParams.get("saved");
+        let btnSave = document.getElementById("save");     
+        let btnDelete = document.getElementById("delete");
+        let stringhapus = document.getElementById("hapus");
+
+        if (isFromSaved) {
+          // Hide fab_save jika dimuat dari indexed db
+          btnSave.style.display = 'none';        
+
+          // show fab_delete jika dimuat dari indexed db
+          btnDelete.style.display = 'block'; 
+          stringhapus.style.display = 'block';
+          
+          // ambil artikel lalu tampilkan
+          getSavedArticleById();          
+        } else {   
+           // Show fab_save jika dimuat dari artikel detail team
+           btnSave.style.display = 'block';      
+
+          // hide fab_delete jika dimuat dari artikel detail team
+          btnDelete.style.display = 'none'; 
+          stringhapus.style.display = 'none';   
+          let item = getAllTeamsById();
+        }
+        
+        let item = getAllTeamsById();
+        btnSave.onclick = () => {
+        console.log("Tombol FAB SAVE di klik.");    
+        M.toast({html: 'Data Tim Favorit Berhasil Disimpan'})
+        item.then((data) => {
+            saveForLater(data);
+            });
+        };         
+     
+        let DeleteTeam = new URLSearchParams(window.location.search).get("id");
+        btnDelete.onclick = () => {
+        console.log("Tombol FAB DELETE di klik.");
+        confirm("Yakin akan menghapus data tim favoritmu?");      
+            deleteteam(parseInt(DeleteTeam));          
+        };
+    });        
+    </script> 
+  </body>
+</html>

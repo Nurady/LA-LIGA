@@ -1,0 +1,23 @@
+{
+    "name": "LA LIGA NEWS",
+    "short_name": "LA LIGA",
+    "description": "Aplikasi LA LIGA PWA pertama saya",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#00897B",
+    "theme_color": "#00897B",
+    "gcm_sender_id": "324794527752",
+    "web-push": "web-push generate-vapid-keys --json",
+    "icons": [
+        {
+            "src": "soccer.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+ 
+      
+    
+}
+
